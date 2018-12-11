@@ -13,7 +13,7 @@ case class Signature(plainMsg: String, publicKey: PublicKey, encryptedMsg: Strin
 object Signature {
 
   def sign(keyPair: KeyPair, msg: String) : Signature = {
-    val encryptedmsg = Crypto.encodeAndEncryptMessage(msg, keyPair.getPrivate)
-    Signature(plainMsg = msg, publicKey = keyPair.getPublic, encryptedMsg = encryptedmsg)
+    val encMsg = Crypto.encodeAndEncryptMessage(msg, keyPair.getPrivate)
+    Signature(plainMsg = msg, publicKey = keyPair.getPublic, encryptedMsg = encMsg)
   }
 }

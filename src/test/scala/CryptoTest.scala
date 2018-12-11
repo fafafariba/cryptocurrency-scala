@@ -18,7 +18,6 @@ class CryptoTest extends FlatSpec with Matchers {
 
     //when
     val encryptedMessage = Crypto.encodeAndEncryptMessage(msg, privateKey)
-//    println(encryptedMessage)
 
     //then
     assert(msg == Crypto.decryptMessageToString(encryptedMessage, publicKey))
