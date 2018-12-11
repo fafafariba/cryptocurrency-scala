@@ -1,6 +1,6 @@
 package com.seefaribacode
 
-import java.security.{KeyPair, PrivateKey, PublicKey}
+import java.security.{KeyPair, PublicKey}
 
 case class Signature(plainMsg: String, publicKey: PublicKey, encryptedMsg: String) {
 

@@ -6,25 +6,35 @@ import javax.crypto.Cipher
 
 object Crypto {
 
+  //TODO: can these be shared to should there be a
   val rsaCipher: Cipher = Cipher.getInstance("RSA")
   val encoder: Base64.Encoder = Base64.getEncoder
   val decoder: Base64.Decoder = Base64.getDecoder
 
-  def encryptMessageToBytes(msgAsBytes: Array[Byte], key: Key): Array[Byte] = {
+  def encryptMessageToBytes(msg: String, key: Key): Array[Byte] = {
     rsaCipher.init(Cipher.ENCRYPT_MODE, key)
+
+    val msgAsBytes = msg.getBytes(utf8)
     rsaCipher.doFinal(msgAsBytes)
     //TODO: should the message be encoded?
   }
 
-  def encodeAndEncryptMessage(message: String, key: Key): String = {
-    val encodedMsg = encoder.encode(message.getBytes(utf8))
-    new String(encryptMessageToBytes(encodedMsg, key))
+  def encodeAndEncryptMessage(msg: String, key: Key): String = {
+    val encryptedMsg = encryptMessageToBytes(msg, key)
+    encoder.encodeToString(encryptedMsg)
   }
 
-  def decryptMessageToString(encryptedMessage: String, key: Key): String = {
-    val decodedMsg = decoder.decode(encryptedMessage)
+  def decryptMessageToString(encMsg: String, key: Key): String = {
     rsaCipher.init(Cipher.DECRYPT_MODE, key)
-    new String(rsaCipher.doFinal(decodedMsg), utf8)
+
+    val decodedMsg = decoder.decode(encMsg.getBytes(utf8))
+    val decryptedMsg = rsaCipher.doFinal(decodedMsg)
+    new String(decryptedMsg, utf8)
   }
 
 }
+
+// ENCRYPTION
+// plain msg -> bytes -> encrypt -> encode -> toString
+// DECRYPTION
+// encrypted msg -> bytes -> decode -> decrypt -> toString
