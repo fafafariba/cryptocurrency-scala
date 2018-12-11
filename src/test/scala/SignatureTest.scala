@@ -1,27 +1,33 @@
 
+import com.seefaribacode.{Crypto, Signature, generateKeyPair}
 import org.scalatest.{FlatSpec, Matchers}
-import com.seefaribacode.{Crypto, generateKeyPair}
 
-class CryptoTest extends FlatSpec with Matchers {
+class SignatureTest extends FlatSpec with Matchers {
 
   val keyPair = generateKeyPair
 
-  behavior of "encodeAndEncryptMessage and decryptMessageToString"
+  behavior of "validate"
 
-  //TODO: how to test individual methods?
-
-  it should "encrypt a message and decrypt back to original message" in {
+  it should "return true when decrypted message matches original message" in {
     //given
     val msg = "hello"
     val privateKey = keyPair.getPrivate
     val publicKey = keyPair.getPublic
-
-    //when
     val encryptedMessage = Crypto.encodeAndEncryptMessage(msg, privateKey)
 
+    //when
+    val sig = Signature(
+      plainMsg = msg,
+      publicKey = publicKey,
+      encryptedMsg = encryptedMessage
+    )
+    val isValid = sig.isValid()
+
+
     //then
-    msg shouldBe Crypto.decryptMessageToString(encryptedMessage, publicKey)
+    isValid shouldBe true
   }
 
+  behavior of "sign"
 
 }

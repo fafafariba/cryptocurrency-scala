@@ -1,33 +1,20 @@
 
-import com.seefaribacode.{Crypto, Signature, generateKeyPair}
+import com.seefaribacode.{Crypto, Signature, Transaction, generateKeyPair}
 import org.scalatest.{FlatSpec, Matchers}
 
-class SignatureTest extends FlatSpec with Matchers {
+class TransactionTest extends FlatSpec with Matchers {
 
-  val keyPair = generateKeyPair
 
-  behavior of "validate"
+  behavior of "serialize"
 
-  it should "return true when decrypted message matches original message" in {
+  it should "serialize transactions" in {
     //given
-    val msg = "hello"
-    val privateKey = keyPair.getPrivate
-    val publicKey = keyPair.getPublic
-    val encryptedMessage = Crypto.encodeAndEncryptMessage(msg, privateKey)
+    val trans = Transaction(fromAccount = "123", toAccount = "456", amount = 10.00)
 
     //when
-    val sig = Signature(
-      plainMsg = msg,
-      publicKey = publicKey,
-      encryptedMsg = encryptedMessage
-    )
-    val isValid = sig.isValid()
-
+    val result = trans.serialize()
 
     //then
-    isValid shouldBe true
+    result should be ("{\"fromAccount\":\"123\",\"toAccount\":\"456\",\"amount\":10.0}")
   }
-
-  behavior of "sign"
-
 }
