@@ -4,12 +4,18 @@ package com.seefaribacode
  * @author ${user.name}
  */
 object App {
-  
-  def foo(x : Array[String]) = x.foldLeft("")((a,b) => a + b)
-  
+
+
   def main(args : Array[String]) {
-    println( "Hello World!" )
-    println("concat arguments = " + foo(args))
+
+    //if public and private keys already exist, use those
+
+    //TODO: extract pre-existing key pair
+
+    // else create key pair
+    val keyPair = generateKeyPair()
+    val privateKey = keyPair.getPrivate
+    val publicKey = keyPair.getPublic
   }
 
 }
