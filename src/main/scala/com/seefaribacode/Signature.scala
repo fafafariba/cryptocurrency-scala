@@ -4,8 +4,8 @@ import java.security.{KeyPair, PublicKey}
 
 case class Signature(plainMsg: String, publicKey: PublicKey, encryptedMsg: String) {
 
-  //TODO: Should this be in Crypto object?
-  def validate(): Boolean = {
+  //add something to convert json to Signature
+  def isValid(): Boolean = {
     Crypto.decryptMessageToString(encryptedMsg, publicKey) == plainMsg
   }
 }

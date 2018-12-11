@@ -6,7 +6,6 @@ import javax.crypto.Cipher
 
 object Crypto {
 
-  //TODO: can these be shared to should there be a
   val rsaCipher: Cipher = Cipher.getInstance("RSA")
   val encoder: Base64.Encoder = Base64.getEncoder
   val decoder: Base64.Decoder = Base64.getDecoder
@@ -16,7 +15,7 @@ object Crypto {
 
     val msgAsBytes = msg.getBytes(utf8)
     rsaCipher.doFinal(msgAsBytes)
-    //TODO: should the message be encoded?
+    //TODO: refactor later
   }
 
   def encodeAndEncryptMessage(msg: String, key: Key): String = {

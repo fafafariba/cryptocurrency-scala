@@ -1,4 +1,11 @@
-# Error Logs
+# Notes
+
+
+## Cryptography
+
+- Encryption must used private key
+- Decrypt signature with
+## Common Errors
 
 `javax.crypto.BadPaddingException: Decryption error`
 

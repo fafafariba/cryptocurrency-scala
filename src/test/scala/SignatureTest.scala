@@ -8,6 +8,8 @@ class CryptoTest extends FlatSpec with Matchers {
 
   behavior of "encodeAndEncryptMessage and decryptMessageToString"
 
+  //TODO: how to test individual methods?
+
   it should "encrypt a message and decrypt back to original message" in {
     //given
     val msg = "hello"
