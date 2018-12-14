@@ -1,19 +1,19 @@
 package com.seefaribacode
 
-import java.security.{KeyPair, PublicKey}
+import java.security.{PrivateKey, PublicKey}
 
-case class Signature(plainMsg: String, publicKey: PublicKey, encryptedMsg: String) {
+case class Signature(publicKey: PublicKey, encryptedMsg: String) {
 
   //add something to convert json to Signature
-  def isValid(): Boolean = {
+  def isValidForMsg(plainMsg: String): Boolean = {
     Crypto.decryptMessageToString(encryptedMsg, publicKey) == plainMsg
   }
 }
 
 object Signature {
 
-  def sign(keyPair: KeyPair, msg: String) : Signature = {
-    val encMsg = Crypto.encodeAndEncryptMessage(msg, keyPair.getPrivate)
-    Signature(plainMsg = msg, publicKey = keyPair.getPublic, encryptedMsg = encMsg)
+  def sign(privateKey: PrivateKey, publicKey: PublicKey, msg: String) : Signature = {
+    val encMsg = Crypto.encodeAndEncryptMessage(msg, privateKey)
+    Signature(publicKey = publicKey, encryptedMsg = encMsg)
   }
 }
