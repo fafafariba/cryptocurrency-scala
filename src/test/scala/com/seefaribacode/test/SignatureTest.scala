@@ -1,3 +1,5 @@
+package com.seefaribacode
+package test
 
 import com.seefaribacode.{Crypto, Signature, generateKeyPair}
 import org.scalatest.{FlatSpec, Matchers}
@@ -13,21 +15,22 @@ class SignatureTest extends FlatSpec with Matchers {
     val msg = "hello"
     val privateKey = keyPair.getPrivate
     val publicKey = keyPair.getPublic
-    val encryptedMessage = Crypto.encodeAndEncryptMessage(msg, privateKey)
+    val encryptedMessage = Crypto.encryptMessagetoBase64Str(msg, privateKey)
 
     //when
     val sig = Signature(
-      plainMsg = msg,
       publicKey = publicKey,
       encryptedMsg = encryptedMessage
     )
-    val isValid = sig.isValid()
+    val isValidSignature = sig.isValidForMsg(msg)
 
 
     //then
-    isValid shouldBe true
+    isValidSignature shouldBe true
   }
 
   behavior of "sign"
+
+  it should "return return"
 
 }

@@ -1,5 +1,6 @@
+package com.seefaribacode
+package test
 
-import com.seefaribacode.{Crypto, Signature, Transaction, generateKeyPair}
 import org.scalatest.{FlatSpec, Matchers}
 
 class TransactionTest extends FlatSpec with Matchers {

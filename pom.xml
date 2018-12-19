@@ -94,9 +94,7 @@
         <version>2.0.0</version>
         <configuration>
           <junitxml>.</junitxml>
-          <!-- Comma separated list of JUnit test class names to execute -->
-          <jUnitClasses>samples.AppTest</jUnitClasses>
-        </configuration>
+          <!-- Comma separated list of JUnit test class names to execute --></configuration>
         <executions>
           <execution>
             <id>test</id>

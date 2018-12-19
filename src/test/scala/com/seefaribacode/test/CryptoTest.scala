@@ -1,3 +1,5 @@
+package com.seefaribacode
+package test
 
 import org.scalatest.{FlatSpec, Matchers}
 import com.seefaribacode.{Crypto, generateKeyPair}
@@ -15,10 +17,10 @@ class CryptoTest extends FlatSpec with Matchers {
     val publicKey = keyPair.getPublic
 
     //when
-    val encryptedMessage = Crypto.encodeAndEncryptMessage(msg, privateKey)
+    val encryptedMessage = Crypto.encryptMessagetoBase64Str(msg, privateKey)
 
     //then
-    msg shouldBe Crypto.decryptMessageToString(encryptedMessage, publicKey)
+    msg shouldBe Crypto.decryptMessagetFromBase64Str(encryptedMessage, publicKey)
   }
 
 

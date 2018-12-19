@@ -2,7 +2,6 @@ package com.seefaribacode
 
 import java.security.{MessageDigest, PrivateKey, PublicKey}
 
-import com.google.gson
 import com.google.gson.Gson
 
 case class Transaction(fromAccount: String, toAccount: String, amount: Double) {
@@ -17,8 +16,6 @@ case class Transaction(fromAccount: String, toAccount: String, amount: Double) {
   def validateTransaction(sig: Signature): Boolean = {
     validateFromAccount(sig.publicKey) && sig.isValidForMsg(this.serialize())
   }
-
-  // generate account number from public key
 
   def serialize(): String = {
     val gson: Gson = new Gson()
@@ -38,6 +35,7 @@ object Transaction {
     (tran, sig)
   }
 
+  // generate account number from public key
   def getAccountIdentifier(publicKey: PublicKey): String = {
     Crypto.encoder.encodeToString(md.digest(publicKey.getEncoded))
   }

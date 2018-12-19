@@ -10,20 +10,13 @@ object Crypto {
   val encoder: Base64.Encoder = Base64.getEncoder
   val decoder: Base64.Decoder = Base64.getDecoder
 
-  def encryptMessageToBytes(msg: String, key: Key): Array[Byte] = {
+  def encryptMessagetoBase64Str(msg: String, key: Key): String = {
     rsaCipher.init(Cipher.ENCRYPT_MODE, key)
-
-    val msgAsBytes = msg.getBytes(utf8)
-    rsaCipher.doFinal(msgAsBytes)
-    //TODO: refactor later
-  }
-
-  def encodeAndEncryptMessage(msg: String, key: Key): String = {
-    val encryptedMsg = encryptMessageToBytes(msg, key)
+    val encryptedMsg = rsaCipher.doFinal(msg.getBytes(utf8))
     encoder.encodeToString(encryptedMsg)
   }
 
-  def decryptMessageToString(encMsg: String, key: Key): String = {
+  def decryptMessagetFromBase64Str(encMsg: String, key: Key): String = {
     rsaCipher.init(Cipher.DECRYPT_MODE, key)
 
     val decodedMsg = decoder.decode(encMsg.getBytes(utf8))
