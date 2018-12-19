@@ -1,7 +1,5 @@
 package com.seefaribacode
 
-import java.util
-
 object Balances {
 
   // fixed reward per Block
@@ -27,6 +25,5 @@ object Balances {
 
 
   //first block is an empty block
-
 
 }

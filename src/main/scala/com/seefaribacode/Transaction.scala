@@ -35,6 +35,7 @@ object Transaction {
     (tran, sig)
   }
 
+
   // generate account number from public key
   def getAccountIdentifier(publicKey: PublicKey): String = {
     Crypto.encoder.encodeToString(md.digest(publicKey.getEncoded))
