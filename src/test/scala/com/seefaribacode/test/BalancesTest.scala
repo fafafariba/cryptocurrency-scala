@@ -1,36 +1,60 @@
-package com.seefaribacode
-package test
+package com.seefaribacode.test
 
-import com.seefaribacode.{Crypto, Signature, generateKeyPair}
+import com.seefaribacode.{Balances, Transaction}
 import org.scalatest.{FlatSpec, Matchers}
 
-class SignatureTest extends FlatSpec with Matchers {
+class BalancesTest extends FlatSpec with Matchers {
 
-  val keyPair = generateKeyPair
+  val balances = Balances
 
-  behavior of "validate"
+  behavior of "applyTransaction"
 
   it should "return true when decrypted message matches original message" in {
     //given
-    val msg = "hello"
-    val privateKey = keyPair.getPrivate
-    val publicKey = keyPair.getPublic
-    val encryptedMessage = Crypto.encryptMessagetoBase64Str(msg, privateKey)
 
     //when
-    val sig = Signature(
-      publicKey = publicKey,
-      encryptedMsg = encryptedMessage
-    )
-    val isValidSignature = sig.isValidForMsg(msg)
-
 
     //then
-    isValidSignature shouldBe true
   }
 
-  behavior of "sign"
+  behavior of "addNewAccount"
 
-  it should "return return"
+  it should "return return" in {
+    //given
+
+    //when
+
+    //then
+  }
+
+  behavior of "checkBalance"
+
+  it should "return return" in {
+    //given
+
+    //when
+
+    //then
+  }
+
+  behavior of "applyReward"
+
+  it should "return return" in {
+    //given
+
+    //when
+
+    //then
+  }
+
+  behavior of "firstTransactionCheck"
+
+  it should "return return" in {
+    //given
+
+    //when
+
+    //then
+  }
 
 }

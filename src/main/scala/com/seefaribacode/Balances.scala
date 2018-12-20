@@ -1,29 +1,42 @@
 package com.seefaribacode
 
-object Balances {
+case class Balances(private val accountMap: Map[String, Double] = Map(), private val reward: Double = 100) {
 
-  // fixed reward per Block
-  val reward: Double = 100
+  case class TransactionResult(bal: Balances, isSuccessful: Boolean) //explore enum + extraction
 
-  val accountMap: Map[String, Double] = Map()
+  def applyTransaction(trans: Transaction) : TransactionResult = {
 
-  def update(trans: Transaction): Map[String, Double] = {
-
-    if (accountMap.exists{ case (k,v) => k == trans.fromAccount}) {
-      // if not first transaction throw error
-      ???
-    } else {
-      ???
+    def executeTransaction(): Balances = {
+        val updatedAccountMap = accountMap.updated(trans.fromAccount,
+          accountMap(trans.fromAccount) - trans.amount).updated(trans.toAccount,
+          accountMap(trans.toAccount) + trans.amount)
+        this.copy(updatedAccountMap)
+      //consider deleting accounts with zero balances
     }
 
+    if (checkBalance(getBalanceForAcct(trans.fromAccount), trans.amount)) {
+      TransactionResult(executeTransaction(), isSuccessful = true)
+    } else TransactionResult(this, isSuccessful = false)
+  }
+
+  def getBalanceForAcct(acct: String): Double = {
+    accountMap.get(acct) match {
+      case Some(b) => b
+      case _ => 0.0
+    }
+  }
+
+  def addNewAccount(account: String): Balances = this.copy(accountMap + (account -> 0.0))
+
+  def checkBalance(balance: Double, amt: Double): Boolean = {
+     if (balance - amt >= 0) true else false
+  }
+
+  def applyReward(acct: String): Balances = {
+    this.copy(accountMap = accountMap.updated(acct, getBalanceForAcct(acct) + reward))
   }
 
   // FOR NEXT TIME
-  // update transactions
-  // update blocks
-  // reward
-
-
-  //first block is an empty block
+  // write tests
 
 }
