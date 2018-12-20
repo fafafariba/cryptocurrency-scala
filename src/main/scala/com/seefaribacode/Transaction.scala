@@ -9,7 +9,7 @@ case class Transaction(fromAccount: String, toAccount: String, amount: Double) {
 
 
   def validateFromAccount(publicKey: PublicKey): Boolean = {
-    fromAccount == Transaction.getAccountIdentifier(publicKey)
+    fromAccount == Account.getAccountIdentifier(publicKey)
   }
 
   // checks signature and account number
@@ -24,20 +24,23 @@ case class Transaction(fromAccount: String, toAccount: String, amount: Double) {
 
 }
 
+case class SignedTransaction(transaction: Transaction, signature: Signature) {
+
+  def validate(): Boolean = transaction.validateTransaction(signature)
+
+}
+
 object Transaction {
 
-  val md: MessageDigest = MessageDigest.getInstance("SHA-256")
   // need private and public key, fromAccount
   // return transaction + sig
-  def createTransaction(publicKey: PublicKey, privateKey: PrivateKey, toAccount: String, amount: Double): (Transaction, Signature) = {
-    val tran = Transaction(fromAccount = getAccountIdentifier(publicKey), toAccount = toAccount, amount = amount)
+  def createTransaction(publicKey: PublicKey, privateKey: PrivateKey, toAccount: String, amount: Double): SignedTransaction = {
+    val tran = Transaction(fromAccount = Account.getAccountIdentifier(publicKey), toAccount = toAccount, amount = amount)
     val sig = Signature.sign(privateKey, publicKey, tran.serialize())
-    (tran, sig)
+    SignedTransaction(tran, sig)
   }
 
 
   // generate account number from public key
-  def getAccountIdentifier(publicKey: PublicKey): String = {
-    Crypto.encoder.encodeToString(md.digest(publicKey.getEncoded))
-  }
+
 }

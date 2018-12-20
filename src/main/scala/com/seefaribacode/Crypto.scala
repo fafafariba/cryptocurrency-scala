@@ -1,7 +1,8 @@
 package com.seefaribacode
 
-import java.security.Key
+import java.security.{Key, MessageDigest}
 import java.util.Base64
+
 import javax.crypto.Cipher
 
 object Crypto {
@@ -9,6 +10,8 @@ object Crypto {
   val rsaCipher: Cipher = Cipher.getInstance("RSA")
   val encoder: Base64.Encoder = Base64.getEncoder
   val decoder: Base64.Decoder = Base64.getDecoder
+  val md: MessageDigest = MessageDigest.getInstance("SHA-256")
+
 
   def encryptMessagetoBase64Str(msg: String, key: Key): String = {
     rsaCipher.init(Cipher.ENCRYPT_MODE, key)
