@@ -10,7 +10,7 @@ class TransactionTest extends FlatSpec with Matchers {
 
   it should "serialize transactions" in {
     //given
-    val trans = Transaction(fromAccount = "123", toAccount = "456", amount = 10.00)
+    val trans = Transaction(sender = "123", recipient = "456", amount = 10.00)
 
     //when
     val result = trans.serialize()

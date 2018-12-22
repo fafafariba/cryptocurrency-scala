@@ -22,7 +22,7 @@ class SignatureTest extends FlatSpec with Matchers {
       publicKey = publicKey,
       encryptedMsg = encryptedMessage
     )
-    val isValidSignature = sig.isValidForMsg(msg)
+    val isValidSignature = sig.validateMessage(msg)
 
 
     //then

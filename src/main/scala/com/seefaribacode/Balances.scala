@@ -2,6 +2,8 @@ package com.seefaribacode
 
 case class Balances(private val accountMap: Map[String, Double] = Map(), private val reward: Double = 100) {
 
+  def rollbackResult: BalancesUpdateResult = BalancesUpdateResult(this, isValid = false)
+
   def tryAddingTransactionToBalances(tran: Transaction) : BalancesUpdateResult = {
 
     def applyTransaction(): Balances = {
@@ -33,25 +35,16 @@ case class Balances(private val accountMap: Map[String, Double] = Map(), private
 
   def tryAddingBlock(block: Block): BalancesUpdateResult = {
 
-    def applyRewardIfValid(result: BalancesUpdateResult): BalancesUpdateResult = {
-      if (result.isValid) {
-        BalancesUpdateResult(balances = applyReward(block.rewardAccount))
-      } else BalancesUpdateResult(balances = this, isValid = false)
-    }
-
     if (block.validateTransactionsAreSigned()) {
 
       val initResult = BalancesUpdateResult(applyReward(block.rewardAccount))
-
       val finalResult = block.signedTransactions.foldLeft(initResult)(processSignedTransactions)
 
-      applyRewardIfValid(finalResult)
+      if (finalResult.isValid) finalResult
+      else rollbackResult
 
-    } else {
+    } else rollbackResult
 
-      BalancesUpdateResult(balances = this, isValid = false)
-
-    }
   }
 
 
@@ -61,7 +54,7 @@ case class Balances(private val accountMap: Map[String, Double] = Map(), private
 
   def processSignedTransactions(result: BalancesUpdateResult,
                                 tran: SignedTransaction): BalancesUpdateResult = {
-    if (!result.isValid) BalancesUpdateResult(balances = this, isValid = false)
+    if (!result.isValid) rollbackResult
     else result.balances.tryAddingTransactionToBalances(tran.transaction)
   }
 }

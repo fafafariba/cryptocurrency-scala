@@ -1,60 +1,69 @@
 package com.seefaribacode.test
 
-import com.seefaribacode.{Balances, Transaction}
+import com.seefaribacode.{Balances, Block, SignedTransaction, Transaction}
 import org.scalatest.{FlatSpec, Matchers}
 
 class BalancesTest extends FlatSpec with Matchers {
 
-  val balances = Balances
+  val originalBal = Balances()
 
-  behavior of "applyTransaction"
+  behavior of "tryAddingTransactionToBalances with VALID transactions"
 
-  it should "return true when decrypted message matches original message" in {
-    //given
+  it should "update Balances" in {
+    //setup
+    val sender = TestAccount()
+    val recipient = TestAccount()
+
+    val senderBal = 100.0
+    val bals = setupBal(sender.account -> senderBal)
+    val amt = 15
+    val tran = Transaction.createTransaction(sender.publickKey, sender.privateKey, recipient.account, amt)
 
     //when
+    val result = bals.tryAddingBlock(Block(List(tran), "123"))
+    val newSenderBal = result.balances.getBalance(sender.account)
+    val newRecipBal = result.balances.getBalance(recipient.account)
 
     //then
+    result.isValid should be (true)
+    result.balances shouldNot be (originalBal)
+    newSenderBal shouldBe (senderBal - amt)
+    newRecipBal shouldBe amt
   }
 
-  behavior of "addNewAccount"
+  behavior of "tryAddingTransactionToBalances with INVALID transactions"
 
-  it should "return return" in {
-    //given
+
+  it should "not update Balance when sender doesn't have enough in their account" in {
+    val sender = TestAccount()
+    val recipient = TestAccount()
+
+//    val senderBal = 100.0
+//    val bals = setupBal(sender.account -> senderBal)
+    val amt = 15
+    val tran = Transaction.createTransaction(sender.publickKey, sender.privateKey, recipient.account, amt)
 
     //when
+    val result = originalBal.tryAddingBlock(Block(List(tran), "123"))
+    val newSenderBal = result.balances.getBalance(sender.account)
+    val newRecipBal = result.balances.getBalance(recipient.account)
 
     //then
+    result.isValid should be (false)
+    result.balances should be (originalBal)
+    newSenderBal shouldBe 0.0
+    newRecipBal shouldNot be (amt)
   }
 
-  behavior of "checkBalance"
 
-  it should "return return" in {
-    //given
+  def setupBal(acctBals: (String, Double) *): Balances = {
 
-    //when
-
-    //then
-  }
-
-  behavior of "applyReward"
-
-  it should "return return" in {
-    //given
-
-    //when
-
-    //then
-  }
-
-  behavior of "firstTransactionCheck"
-
-  it should "return return" in {
-    //given
-
-    //when
-
-    //then
+    def addToAcctMap(acctMap: Map[String, Double], acctBals:(String, Double)): Map[String, Double] = {
+      val (acct, bal) = acctBals
+      acctMap + (acct -> bal)
+    }
+    val acctMap: Map[String,Double] = acctBals.foldLeft( Map[String, Double]() )( addToAcctMap )
+    Balances(accountMap = acctMap)
   }
 
 }
