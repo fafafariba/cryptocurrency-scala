@@ -1,11 +1,12 @@
 package com.seefaribacode
 
-case class Block(transactions: List[SignedTransaction], rewardAccount: String) {
+case class Block(signedTransactions: List[SignedTransaction], rewardAccount: String) {
+
+  def validateTransactionsAreSigned(): Boolean = signedTransactions.forall(st => st.validate())
 
   def add(signedTransaction: SignedTransaction): Block = {
-    this.copy(transactions = transactions :+ signedTransaction)
+    this.copy(signedTransactions = signedTransactions :+ signedTransaction)
   }
 
-  def validate(): Boolean = transactions.forall( st => st.validate())
 
 }
