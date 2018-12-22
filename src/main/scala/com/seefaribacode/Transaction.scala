@@ -3,17 +3,17 @@ package com.seefaribacode
 import java.security.{PrivateKey, PublicKey}
 import com.google.gson.Gson
 
-case class Transaction(fromAccount: String, toAccount: String, amount: Double) {
+case class Transaction(sender: String, recipient: String, amount: Double) {
   //consider changing amount type at some point
 
 
-  def validateFromAccount(publicKey: PublicKey): Boolean = {
-    fromAccount == Account.getAccountIdentifier(publicKey)
+  def validateSender(publicKey: PublicKey): Boolean = {
+    sender == Account.getAccountIdentifier(publicKey)
   }
 
   // checks signature and account number
   def validateTransaction(sig: Signature): Boolean = {
-    validateFromAccount(sig.publicKey) && sig.isValidForMsg(this.serialize())
+    validateSender(sig.publicKey) && sig.validateMessage(this.serialize())
   }
 
   def serialize(): String = {
@@ -23,18 +23,12 @@ case class Transaction(fromAccount: String, toAccount: String, amount: Double) {
 
 }
 
-case class SignedTransaction(transaction: Transaction, signature: Signature) {
-
-  def validate(): Boolean = transaction.validateTransaction(signature)
-
-}
-
 object Transaction {
 
   // need private and public key, fromAccount
   // return transaction + sig
-  def createTransaction(publicKey: PublicKey, privateKey: PrivateKey, toAccount: String, amount: Double): SignedTransaction = {
-    val tran = Transaction(fromAccount = Account.getAccountIdentifier(publicKey), toAccount = toAccount, amount = amount)
+  def createTransaction(publicKey: PublicKey, privateKey: PrivateKey, recipient: String, amount: Double): SignedTransaction = {
+    val tran = Transaction(sender = Account.getAccountIdentifier(publicKey), recipient = recipient, amount = amount)
     val sig = Signature.sign(privateKey, publicKey, tran.serialize())
     SignedTransaction(tran, sig)
   }

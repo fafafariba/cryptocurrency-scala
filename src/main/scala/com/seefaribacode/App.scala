@@ -40,13 +40,12 @@ object App {
     val p2paysp3 = Transaction.createTransaction(publicKey2, privateKey2, p3account, amount = 50)
 
     val newBlock = Block(List(), p1account).add(p1paysp2).add(p2paysp3)
-    val blockResult = balances.addBlock(newBlock)
+    val blockResult = balances.tryAddingBlock(newBlock)
 
-    println(blockResult.isSuccessful)
+    println(blockResult.isValid)
     println(blockResult.balances)
-    println(newBlock.validateTransactionsAreSigned())
 
-    //
+
   }
 
 }

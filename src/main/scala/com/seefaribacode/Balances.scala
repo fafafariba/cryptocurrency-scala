@@ -2,67 +2,66 @@ package com.seefaribacode
 
 case class Balances(private val accountMap: Map[String, Double] = Map(), private val reward: Double = 100) {
 
-  def applyTransaction(trans: Transaction) : TransactionResult = {
+  def tryAddingTransactionToBalances(tran: Transaction) : BalancesUpdateResult = {
 
-    def executeTransaction(): Balances = {
-        val updatedAccountMap = accountMap.updated(trans.fromAccount,
-          getBalance(trans.fromAccount) - trans.amount).updated(trans.toAccount,
-          getBalance(trans.toAccount) + trans.amount)
+    def applyTransaction(): Balances = {
+      val updatedAccountMap = accountMap +
+        (tran.sender -> (getBalance(tran.sender) - tran.amount)) +
+        (tran.recipient -> (getBalance(tran.recipient) + tran.amount))
 
-        this.copy(updatedAccountMap)
+      this.copy(accountMap = updatedAccountMap)
       //consider deleting accounts with zero balances
     }
 
-    if (checkBalance(getBalance(trans.fromAccount), trans.amount)) {
-      TransactionResult(executeTransaction(), isSuccessful = true)
-    } else TransactionResult(this, isSuccessful = false)
+    if (accountHasAmount(tran.sender, tran.amount)) {
+      BalancesUpdateResult(applyTransaction())
+    } else BalancesUpdateResult(this, isValid = false)
   }
 
   def getBalance(acct: String): Double = {
     accountMap.get(acct) match {
+      //if acct exists, return balance, otherwise return 0
       case Some(b) => b
       case _ => 0.0
     }
   }
 
-  def addBlock(block: Block): BlockResult = {
+  def applyReward(acct: String): Balances = {
+    val newAccountMap = accountMap + (acct -> (getBalance(acct) + reward))
+    this.copy(accountMap = newAccountMap)
+  }
 
-    // checks TransactionResult
-    def useSuccessfulTransactionResult(tResult: TransactionResult): TransactionResult = {
-      if (tResult.isSuccessful) tResult
-      else TransactionResult(this, isSuccessful = false)
-    }
+  def tryAddingBlock(block: Block): BalancesUpdateResult = {
 
-    def processBlockSigTrans(tResult: TransactionResult, sTran: SignedTransaction): TransactionResult = {
-      if (!tResult.isSuccessful) TransactionResult(this, isSuccessful = false)
-      else {
-        val newResult = tResult.balances.applyTransaction(sTran.transaction)
-        if (newResult.isSuccessful) newResult
-        else TransactionResult(this, isSuccessful = false)
-      }
+    def applyRewardIfValid(result: BalancesUpdateResult): BalancesUpdateResult = {
+      if (result.isValid) {
+        BalancesUpdateResult(balances = applyReward(block.rewardAccount))
+      } else BalancesUpdateResult(balances = this, isValid = false)
     }
 
     if (block.validateTransactionsAreSigned()) {
 
-      val balAfterReward = applyReward(block.rewardAccount)
-      val initTranRes = TransactionResult(balAfterReward, isSuccessful = true)
+      val initResult = BalancesUpdateResult(applyReward(block.rewardAccount))
 
+      val finalResult = block.signedTransactions.foldLeft(initResult)(processSignedTransactions)
 
-      val finalTransactionResult = block.signedTransactions.foldLeft(initTranRes)(processBlockSigTrans)
-      BlockResult(finalTransactionResult.balances, finalTransactionResult.isSuccessful)
+      applyRewardIfValid(finalResult)
 
-    } else BlockResult(this, isSuccessful = false)
+    } else {
+
+      BalancesUpdateResult(balances = this, isValid = false)
+
+    }
   }
+
 
   def addNewAccount(account: String): Balances = this.copy(accountMap + (account -> 0.0))
 
-  def checkBalance(balance: Double, amt: Double): Boolean = balance - amt >= 0
+  def accountHasAmount(account: String, amt: Double): Boolean = getBalance(account) - amt >= 0
 
-  def applyReward(account: String): Balances = {
-    this.copy(accountMap = accountMap.updated(account, getBalance(account) + reward))
+  def processSignedTransactions(result: BalancesUpdateResult,
+                                tran: SignedTransaction): BalancesUpdateResult = {
+    if (!result.isValid) BalancesUpdateResult(balances = this, isValid = false)
+    else result.balances.tryAddingTransactionToBalances(tran.transaction)
   }
-
-  // FOR NEXT TIME
-  // write tests
-
 }
