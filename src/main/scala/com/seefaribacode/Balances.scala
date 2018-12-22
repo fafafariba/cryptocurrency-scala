@@ -1,6 +1,7 @@
 package com.seefaribacode
 
-case class Balances(private val accountMap: Map[String, Double] = Map(), private val reward: Double = 100) {
+case class Balances(private val accountMap: Map[String, Double] = Map(),
+                    private val reward: Double = 100) {
 
   def rollbackResult: BalancesUpdateResult = BalancesUpdateResult(this, isValid = false)
 

@@ -35,11 +35,9 @@ class BalancesTest extends FlatSpec with Matchers {
 
 
   it should "not update Balance when sender doesn't have enough in their account" in {
+    //given
     val sender = TestAccount()
     val recipient = TestAccount()
-
-//    val senderBal = 100.0
-//    val bals = setupBal(sender.account -> senderBal)
     val amt = 15
     val tran = Transaction.createTransaction(sender.publickKey, sender.privateKey, recipient.account, amt)
 
@@ -62,8 +60,9 @@ class BalancesTest extends FlatSpec with Matchers {
       val (acct, bal) = acctBals
       acctMap + (acct -> bal)
     }
-    val acctMap: Map[String,Double] = acctBals.foldLeft( Map[String, Double]() )( addToAcctMap )
-    Balances(accountMap = acctMap)
+    val initMap: Map[String, Double] = Map()
+    val finalAcctMap: Map[String,Double] = acctBals.foldLeft(initMap)(addToAcctMap)
+    Balances(accountMap = finalAcctMap)
   }
 
 }

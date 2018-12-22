@@ -16,6 +16,6 @@ class TransactionTest extends FlatSpec with Matchers {
     val result = trans.serialize()
 
     //then
-    result should be ("{\"fromAccount\":\"123\",\"toAccount\":\"456\",\"amount\":10.0}")
+    result should be ("{\"sender\":\"123\",\"recipient\":\"456\",\"amount\":10.0}")
   }
 }
