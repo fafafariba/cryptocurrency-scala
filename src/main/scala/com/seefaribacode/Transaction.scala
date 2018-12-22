@@ -1,7 +1,6 @@
 package com.seefaribacode
 
-import java.security.{MessageDigest, PrivateKey, PublicKey}
-
+import java.security.{PrivateKey, PublicKey}
 import com.google.gson.Gson
 
 case class Transaction(fromAccount: String, toAccount: String, amount: Double) {

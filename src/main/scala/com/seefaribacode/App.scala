@@ -27,10 +27,11 @@ object App {
     val privateKey3 = keyPair3.getPrivate
     val publicKey3 = keyPair3.getPublic
 
-    val balances = Balances
+    val balances = Balances()
     val ledger: List[Block] = List()
 
     val p1account = Account.getAccountIdentifier(publicKey)
+    println(p1account)
     val p2account = Account.getAccountIdentifier(publicKey2)
     val p3account = Account.getAccountIdentifier(publicKey3)
 
@@ -39,7 +40,11 @@ object App {
     val p2paysp3 = Transaction.createTransaction(publicKey2, privateKey2, p3account, amount = 50)
 
     val newBlock = Block(List(), p1account).add(p1paysp2).add(p2paysp3)
-    println(newBlock.validate())
+    val blockResult = balances.addBlock(newBlock)
+
+    println(blockResult.isSuccessful)
+    println(blockResult.balances)
+    println(newBlock.validateTransactionsAreSigned())
 
     //
   }
