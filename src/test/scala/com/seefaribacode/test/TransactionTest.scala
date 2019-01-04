@@ -6,7 +6,6 @@ import org.scalatest.{FlatSpec, Matchers}
 class TransactionTest extends FlatSpec with Matchers {
 
   behavior of "validatePayerAccount"
-  behavior of "serialize"
 
   it should "serialize transactions" in {
     //given
