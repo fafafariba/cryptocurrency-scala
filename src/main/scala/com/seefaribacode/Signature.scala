@@ -12,7 +12,7 @@ case class Signature(publicKey: PublicKey, encryptedMsg: String) {
 
 object Signature {
 
-  //TODO move this to Transaction i.e. trans.sign?
+  //used internally
   def sign(privateKey: PrivateKey, publicKey: PublicKey, msg: String) : Signature = {
     val encMsg = Crypto.encryptMessagetoBase64Str(msg, privateKey)
     Signature(publicKey = publicKey, encryptedMsg = encMsg)

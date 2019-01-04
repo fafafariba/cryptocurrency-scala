@@ -27,7 +27,7 @@ object Transaction {
 
   // need private and public key, fromAccount
   // return transaction + sig
-  def createTransaction(publicKey: PublicKey, privateKey: PrivateKey, recipient: String, amount: Double): SignedTransaction = {
+  def createSignedTransaction(publicKey: PublicKey, privateKey: PrivateKey, recipient: String, amount: Double): SignedTransaction = {
     val tran = Transaction(sender = Account.getAccountIdentifier(publicKey), recipient = recipient, amount = amount)
     val sig = Signature.sign(privateKey, publicKey, tran.serialize())
     SignedTransaction(tran, sig)

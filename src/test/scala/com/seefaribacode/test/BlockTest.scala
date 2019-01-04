@@ -12,8 +12,8 @@ class BlockTest extends FlatSpec with Matchers {
   val user3 = TestAccount()
 
   it should "return true for a valid block" in {
-    val signedTransaction1 = Transaction.createTransaction(user1.publickKey, user1.privateKey, user2.account, 100.00)
-    val signedTransaction2 = Transaction.createTransaction(user2.publickKey, user2.privateKey, user3.account, 50.00)
+    val signedTransaction1 = Transaction.createSignedTransaction(user1.publickKey, user1.privateKey, user2.account, 100.00)
+    val signedTransaction2 = Transaction.createSignedTransaction(user2.publickKey, user2.privateKey, user3.account, 50.00)
 
     val signedTransactions = List(signedTransaction1, signedTransaction2)
     val block = Block(signedTransactions, "123")
@@ -25,8 +25,8 @@ class BlockTest extends FlatSpec with Matchers {
 
   it should "return return" in {
     //given
-    val signedTransaction1 = Transaction.createTransaction(user1.publickKey, user1.privateKey, user2.account, 100.0)
-    val signedTransaction2 = Transaction.createTransaction(user3.publickKey, user3.privateKey, user2.account, 100.0)
+    val signedTransaction1 = Transaction.createSignedTransaction(user1.publickKey, user1.privateKey, user2.account, 100.0)
+    val signedTransaction2 = Transaction.createSignedTransaction(user3.publickKey, user3.privateKey, user2.account, 100.0)
     val block = Block(List(signedTransaction1), "123")
 
     //when

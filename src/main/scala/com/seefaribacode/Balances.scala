@@ -13,7 +13,7 @@ case class Balances(private val accountMap: Map[String, Double] = Map(),
         (tran.recipient -> (getBalance(tran.recipient) + tran.amount))
 
       this.copy(accountMap = updatedAccountMap)
-      //consider deleting accounts with zero balances
+      //TODO: consider deleting accounts with zero balances
     }
 
     if (accountHasAmount(tran.sender, tran.amount)) {
@@ -34,12 +34,12 @@ case class Balances(private val accountMap: Map[String, Double] = Map(),
     this.copy(accountMap = newAccountMap)
   }
 
+  //TODO can this be refactored to something better?
   def tryAddingBlock(block: Block): BalancesUpdateResult = {
-
     if (block.validateTransactionsAreSigned()) {
 
       val initResult = BalancesUpdateResult(applyReward(block.rewardAccount))
-      val finalResult = block.signedTransactions.foldLeft(initResult)(processSignedTransactions)
+      val finalResult = block.signedTransactions.foldLeft(initResult)(verifySignedTransactions)
 
       if (finalResult.isValid) finalResult
       else rollbackResult
@@ -49,12 +49,10 @@ case class Balances(private val accountMap: Map[String, Double] = Map(),
   }
 
 
-  def addNewAccount(account: String): Balances = this.copy(accountMap + (account -> 0.0))
-
   def accountHasAmount(account: String, amt: Double): Boolean = getBalance(account) - amt >= 0
 
-  def processSignedTransactions(result: BalancesUpdateResult,
-                                tran: SignedTransaction): BalancesUpdateResult = {
+  def verifySignedTransactions(result: BalancesUpdateResult,
+                               tran: SignedTransaction): BalancesUpdateResult = {
     if (!result.isValid) rollbackResult
     else result.balances.tryAddingTransactionToBalances(tran.transaction)
   }
