@@ -1,7 +1,6 @@
 package com.seefaribacode
 package test
 
-import com.seefaribacode.{Crypto, Signature, generateKeyPair}
 import org.scalatest.{FlatSpec, Matchers}
 
 class SignatureTest extends FlatSpec with Matchers {
@@ -31,6 +30,8 @@ class SignatureTest extends FlatSpec with Matchers {
 
   behavior of "sign"
 
-  it should "return return"
+  it should "return valid Signature" in {
+    ???
+  }
 
 }

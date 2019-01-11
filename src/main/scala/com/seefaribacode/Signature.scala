@@ -4,7 +4,7 @@ import java.security.{PrivateKey, PublicKey}
 
 case class Signature(publicKey: PublicKey, encryptedMsg: String) {
 
-  //add something to convert json to Signature
+  //TODO add something to convert json to Signature
   def validateMessage(plainMsg: String): Boolean = {
     Crypto.decryptMessagetFromBase64Str(encryptedMsg, publicKey) == plainMsg
   }
@@ -12,7 +12,7 @@ case class Signature(publicKey: PublicKey, encryptedMsg: String) {
 
 object Signature {
 
-  //used internally
+  //used internally by Transaction object
   def sign(privateKey: PrivateKey, publicKey: PublicKey, msg: String) : Signature = {
     val encMsg = Crypto.encryptMessagetoBase64Str(msg, privateKey)
     Signature(publicKey = publicKey, encryptedMsg = encMsg)

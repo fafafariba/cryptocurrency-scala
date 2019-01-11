@@ -118,7 +118,7 @@ class BalancesTest extends FlatSpec with Matchers {
       sender.privateKey,
       recipient.account,
       30)
-    val finalBalResult = originalBal.verifySignedTransactions(initBalResult, signedTrans)
+    val finalBalResult = originalBal.verifySignedTransaction(initBalResult, signedTrans)
     finalBalResult.balances should not be originalBal
     finalBalResult.isValid should be (true)
   }
@@ -132,7 +132,7 @@ class BalancesTest extends FlatSpec with Matchers {
       sender.privateKey,
       recipient.account,
       30)
-    val finalBalResult = originalBal.verifySignedTransactions(initBalResult, signedTrans)
+    val finalBalResult = originalBal.verifySignedTransaction(initBalResult, signedTrans)
     finalBalResult.balances should be (originalBal)
     finalBalResult.isValid should be (false)
   }

@@ -7,18 +7,18 @@ case class Balances(private val accountMap: Map[String, Double] = Map(),
 
   def tryAddingTransactionToBalances(tran: Transaction) : BalancesUpdateResult = {
 
-    def applyTransaction(): Balances = {
+    def applyTransaction(sender: String, amt: Double): Balances = {
       val updatedAccountMap = accountMap +
         (tran.sender -> (getBalance(tran.sender) - tran.amount)) +
         (tran.recipient -> (getBalance(tran.recipient) + tran.amount))
+      //TODO: consider deleting accounts with zero balances
 
       this.copy(accountMap = updatedAccountMap)
-      //TODO: consider deleting accounts with zero balances
     }
 
     if (accountHasAmount(tran.sender, tran.amount)) {
-      BalancesUpdateResult(applyTransaction())
-    } else BalancesUpdateResult(this, isValid = false)
+      BalancesUpdateResult(applyTransaction(tran.sender, tran.amount))
+    } else rollbackResult
   }
 
   def getBalance(acct: String): Double = {
@@ -34,12 +34,11 @@ case class Balances(private val accountMap: Map[String, Double] = Map(),
     this.copy(accountMap = newAccountMap)
   }
 
-  //TODO can this be refactored to something better?
   def tryAddingBlock(block: Block): BalancesUpdateResult = {
     if (block.validateTransactionsAreSigned()) {
 
       val initResult = BalancesUpdateResult(applyReward(block.rewardAccount))
-      val finalResult = block.signedTransactions.foldLeft(initResult)(verifySignedTransactions)
+      val finalResult = block.signedTransactions.foldLeft(initResult)(verifySignedTransaction)
 
       if (finalResult.isValid) finalResult
       else rollbackResult
@@ -48,11 +47,10 @@ case class Balances(private val accountMap: Map[String, Double] = Map(),
 
   }
 
-
   def accountHasAmount(account: String, amt: Double): Boolean = getBalance(account) - amt >= 0
 
-  def verifySignedTransactions(result: BalancesUpdateResult,
-                               tran: SignedTransaction): BalancesUpdateResult = {
+  def verifySignedTransaction(result: BalancesUpdateResult,
+                              tran: SignedTransaction): BalancesUpdateResult = {
     if (!result.isValid) rollbackResult
     else result.balances.tryAddingTransactionToBalances(tran.transaction)
   }

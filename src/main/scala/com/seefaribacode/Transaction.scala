@@ -6,7 +6,6 @@ import com.google.gson.Gson
 case class Transaction(sender: String, recipient: String, amount: Double) {
   //consider changing amount type at some point
 
-
   def validateSender(publicKey: PublicKey): Boolean = {
     sender == Account.getAccountIdentifier(publicKey)
   }
@@ -25,15 +24,11 @@ case class Transaction(sender: String, recipient: String, amount: Double) {
 
 object Transaction {
 
-  // need private and public key, fromAccount
   // return transaction + sig
   def createSignedTransaction(publicKey: PublicKey, privateKey: PrivateKey, recipient: String, amount: Double): SignedTransaction = {
     val tran = Transaction(sender = Account.getAccountIdentifier(publicKey), recipient = recipient, amount = amount)
     val sig = Signature.sign(privateKey, publicKey, tran.serialize())
     SignedTransaction(tran, sig)
   }
-
-
-  // generate account number from public key
 
 }
