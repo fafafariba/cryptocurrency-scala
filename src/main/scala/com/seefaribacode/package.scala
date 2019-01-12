@@ -1,11 +1,11 @@
 package com
 
-import java.security.{KeyPairGenerator, KeyPair}
-import java.nio.charset.StandardCharsets
+import java.security.{KeyPair, KeyPairGenerator}
+import java.nio.charset.{Charset, StandardCharsets}
 
 package object seefaribacode {
 
-  val utf8 = StandardCharsets.UTF_8
+  val utf8: Charset = StandardCharsets.UTF_8
 
   def generateKeyPair(): KeyPair = {
     val keyPairGenerator = KeyPairGenerator.getInstance("RSA")
